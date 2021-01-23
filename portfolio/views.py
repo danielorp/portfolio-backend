@@ -1,15 +1,37 @@
 
-from rest_framework import viewsets
+from datetime import datetime, timedelta
+from rest_framework import status, viewsets
+from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
-from portfolio.models import Portfolio, Post, Contact
-from portfolio.serializers import UserSerializer, PortfolioSerializer, PostSerializer, ContactSerializer
+from rest_framework_jwt.views import ObtainJSONWebToken
 
+from portfolio.models import Contact, Portfolio, Post
+from portfolio.serializers import (ContactSerializer, PortfolioSerializer,
+                                   PostSerializer, UserSerializer)
 
-def jwt_response_payload_handler(token, user=None, request=None):
-    return {
-        'token': token,
-        'user': UserSerializer(user, context={'request': request}).data,
-    }
+jwt_response_payload_handler = api_settings.JWT_RESPONSE_PAYLOAD_HANDLER
+
+class JSONWebTokenAuthentication(ObtainJSONWebToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            user = serializer.object.get('user') or request.user
+            token = serializer.object.get('token')
+            response_data = jwt_response_payload_handler(token, user, request)
+            response = Response(response_data)
+            if api_settings.JWT_AUTH_COOKIE:
+                expiration = (datetime.now() +
+                              api_settings.JWT_EXPIRATION_DELTA)
+                response.set_cookie(api_settings.JWT_AUTH_COOKIE,
+                                    token,
+                                    expires=expiration,
+                                    httponly=True)
+            import pdb; pdb.set_trace()
+            return response
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PortfolioView(viewsets.ModelViewSet):
