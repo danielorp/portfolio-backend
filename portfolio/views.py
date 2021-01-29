@@ -22,13 +22,14 @@ class JSONWebTokenAuthentication(ObtainJSONWebToken):
             token = serializer.object.get('token')
             response_data = jwt_response_payload_handler(token, user, request)
             response = Response(response_data)
+            response['Access-Control-Allow-Origin'] = '*'
             if api_settings.JWT_AUTH_COOKIE:
                 expiration = format_datetime((datetime.now() +
                               api_settings.JWT_EXPIRATION_DELTA))
                 response.set_cookie(api_settings.JWT_AUTH_COOKIE,
                                     token,
                                     expires=expiration,
-                                    httponly=True)
+                                    httponly=False)
             return response
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -44,6 +45,10 @@ class PostView(viewsets.ModelViewSet):
 
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+    def list(self, request, *args, **kwargs):
+        parent = super(PostView, self).list(request, *args, **kwargs)
+        return parent
 
 
 class ContactView(viewsets.ModelViewSet):

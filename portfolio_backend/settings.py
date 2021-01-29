@@ -42,13 +42,14 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),
     'JWT_AUTH_COOKIE': 'token-cookie',
+    'JWT_ALLOW_REFRESH': True,
 }
 
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000',
-)
+#CORS_ORIGIN_WHITELIST = (
+#    'http://localhost:3000',
+#)
 
-CORS_ALLOW_CREDENTIALS = True
+#CORS_ALLOW_CREDENTIALS = True
 
 
 # Application definition
@@ -61,7 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders',
+    #'corsheaders',
     'portfolio',
 ]
 
