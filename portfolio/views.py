@@ -22,7 +22,6 @@ class JSONWebTokenAuthentication(ObtainJSONWebToken):
             token = serializer.object.get('token')
             response_data = jwt_response_payload_handler(token, user, request)
             response = Response(response_data)
-            response['Access-Control-Allow-Origin'] = '*'
             if api_settings.JWT_AUTH_COOKIE:
                 expiration = format_datetime((datetime.now() +
                               api_settings.JWT_EXPIRATION_DELTA))

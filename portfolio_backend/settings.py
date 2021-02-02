@@ -28,6 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+FRONTEND_OPTIONS = {
+    'DOMAIN': 'http://127.0.0.1:3000'
+}
+
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -45,12 +50,9 @@ JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
 }
 
-#CORS_ORIGIN_WHITELIST = (
-#    'http://localhost:3000',
-#)
-
-#CORS_ALLOW_CREDENTIALS = True
-
+CORS_ORIGIN_WHITELIST = (
+    FRONTEND_OPTIONS['DOMAIN'],
+)
 
 # Application definition
 
@@ -62,11 +64,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    #'corsheaders',
+    'corsheaders',
     'portfolio',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
