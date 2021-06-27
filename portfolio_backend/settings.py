@@ -28,10 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-FRONTEND_OPTIONS = {
-    'DOMAIN': 'http://127.0.0.1:3000'
-}
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -45,13 +41,16 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=300),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=600),
     'JWT_AUTH_COOKIE': 'token-cookie',
     'JWT_ALLOW_REFRESH': True,
 }
 
+CORS_ALLOW_CREDENTIALS = True
+
 CORS_ORIGIN_WHITELIST = (
-    FRONTEND_OPTIONS['DOMAIN'],
+    ('http://127.0.0.1:3000'),
+    ('http://localhost:3000'),
 )
 
 # Application definition
